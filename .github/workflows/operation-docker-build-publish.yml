@@ -132,7 +132,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ inputs.image-name }}
           readme-filepath: ${{ inputs.registry-readme }}
-          
+
+      - name: Selecting primary image from
+        run: echo "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}"
         
       - name: Set output image
         id: get-primary-image
