@@ -47,6 +47,9 @@ on:
       primary-image:
         description: "Primary full name of pushed docker image"
         value: ${{ jobs.build_publish_docker.outputs.primary-image }}
+    secrets:
+      DOCKERHUB_TOKEN:
+        required: true
         
 jobs:
   build_publish_docker:
