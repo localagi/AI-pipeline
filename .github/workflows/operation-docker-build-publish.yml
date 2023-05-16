@@ -19,6 +19,9 @@ on:
       dockerfile:
         type: string
         default: Dockerfile
+      context:
+        type: string
+        default: "{{defaultContext}}"
       push:
         type: boolean
         default: true
@@ -31,6 +34,9 @@ on:
       registry-readme:
         type: string
         default: README.md
+      runs-on:
+        type: string
+        default: ubuntu-latest
     outputs:
       digest:
         description: "Digest of docker image"
@@ -38,7 +44,7 @@ on:
 
 jobs:
   build_publish_docker:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
 
     permissions:
       packages: write
@@ -99,6 +105,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           file: ${{ inputs.dockerfile }}
+          context: ${{ inputs.context }}
           build-args: ${{ inputs.build-args }}
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
@@ -112,6 +119,7 @@ jobs:
           fetch-depth: 1
 
       - name: Docker Hub Description
+        if: inputs.registry-dockerhub
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
