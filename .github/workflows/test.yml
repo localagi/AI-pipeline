@@ -24,7 +24,7 @@ jobs:
       image-name: ${{ github.repository_owner }}/hello-outerspace
       dockerfile: Dockerfile.dependent
       build-args: |
-        FROM_IMAGE=${{needs.build-hello-universe.outputs.primary-image}}@${{needs.call-docker-build-fastchat.outputs.digest}}
+        FROM_IMAGE=${{needs.build-hello-universe.outputs.primary-image}}
       registry-dockerhub: false #TODO remove
     secrets: inherit
     needs: build-hello-universe
