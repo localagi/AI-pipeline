@@ -44,6 +44,9 @@ on:
       digest:
         description: "Digest of docker image"
         value: ${{ jobs.build_publish_docker.outputs.digest }}
+      primary-image:
+        description: "Primary full name of pushed docker image"
+        value: ${{ jobs.build_publish_docker.outputs.primary-image }}
 
 jobs:
   build_publish_docker:
@@ -55,6 +58,7 @@ jobs:
 
     outputs:
       digest: ${{ steps.dockerBuild.outputs.digest }}
+      primary-image: ${{ steps.get-primary-image.outputs.primary-image }}
 
     steps:
       - name: Log in to Docker Hub
@@ -128,4 +132,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ inputs.image-name }}
           readme-filepath: ${{ inputs.registry-readme }}
-
+          
+        
+      - name: Set output image
+        id: get-primary-image
+        run: echo "primary-image=$( cut -d ';' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"	
