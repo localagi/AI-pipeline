@@ -136,4 +136,4 @@ jobs:
         
       - name: Set output image
         id: get-primary-image
-        run: echo "primary-image=$( cut -d ';' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"	
+        run: echo "primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"	
