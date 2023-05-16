@@ -97,13 +97,12 @@ jobs:
       # Needed for cache layers on github registry
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        with:
-          platforms: linux/amd64,linux/arm64,darwin
       
       - name: Build and push Docker images
         id: dockerBuild
         uses: docker/build-push-action@v4
         with:
+          platforms: linux/amd64,linux/arm64,darwin
           file: ${{ inputs.dockerfile }}
           context: ${{ inputs.context }}
           build-args: ${{ inputs.build-args }}
