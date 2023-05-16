@@ -10,19 +10,34 @@ permissions:
   contents: read
 
 jobs:
-
+  # shortest build, all repo defaults
+  build-ai-dedicated-workflows:
+    uses: ./.github/workflows/operation-docker-build-publish.yml
+    secrets: inherit
+    
   build-hello-universe:
     uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
-      image-name: ${{ github.repository_owner }}/hello-universe
+      registry-repo-name: hello-universe
     secrets: inherit
-
+    
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug outputs
+        run: echo "${{ needs.build-hello-universe.outputs }}"
+      - name: debug digest
+        run: echo "${{ needs.build-hello-universe.outputs.digest }}"
+      - name: debug primary image
+        run: echo "${{ needs.build-hello-universe.outputs.primary-image }}"
+    needs: build-hello-universe
+        
   build-hello-outerspace:
     uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
-      image-name: ${{ github.repository_owner }}/hello-outerspace
+      registry-repo-name: hello-outerspace
       dockerfile: Dockerfile.dependent
       build-args: |
-        FROM_IMAGE=${{needs.build-hello-universe.outputs.primary-image}}
+        FROM_IMAGE=${{ needs.build-hello-universe.outputs.primary-image }}
     secrets: inherit
     needs: build-hello-universe

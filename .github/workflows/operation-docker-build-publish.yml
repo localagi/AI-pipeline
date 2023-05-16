@@ -3,9 +3,6 @@ name: Build and publish docker containers
 on:
   workflow_call:
     inputs:
-      image-name:
-        type: string
-        required: true
       tags:
         type: string
         default: |
@@ -25,10 +22,13 @@ on:
       push:
         type: boolean
         default: true
-      registry-dockerhub:
+      registry-repo-name:
+        type: string
+        default: ${{ github.event.repository.name }}
+      registry-dockerhub-enable:
         type: boolean
         default: true
-      registry-github:
+      registry-github-enable:
         type: boolean
         default: true
       registry-readme:
@@ -47,7 +47,7 @@ on:
       primary-image:
         description: "Primary full name of pushed docker image"
         value: ${{ jobs.build_publish_docker.outputs.primary-image }}
-
+        
 jobs:
   build_publish_docker:
     runs-on: ${{ inputs.runs-on }}
@@ -62,29 +62,35 @@ jobs:
 
     steps:
       - name: Log in to Docker Hub
-        if: inputs.registry-dockerhub
+        if: inputs.registry-dockerhub-enable
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Log in to the Github registry
-        if: inputs.registry-github
+        if: inputs.registry-github-enable
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
 
+      - name: Generate dockerhub full repo path
+        if: inputs.registry-dockerhub-enable
+        id: step_one
+        run: |
+          echo "dockerhub-repo=${{ vars.DOCKERHUB_USERNAME }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
+
       - name: Set image names
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "image-names<<$EOF" >> "$GITHUB_ENV"
-          if ${{ inputs.registry-dockerhub }} ; then
-            echo "${{ inputs.image-name }}" >> "$GITHUB_ENV"
+          if ${{ inputs.registry-dockerhub-enable }} ; then
+            echo "${{ env.dockerhub-repo }}" >> "$GITHUB_ENV"
           fi
-          if ${{ inputs.registry-github }} ; then
-            echo "ghcr.io/${{ inputs.image-name }}" >> "$GITHUB_ENV"
+          if ${{ inputs.registry-github-enable }} ; then
+            echo "ghcr.io/${{ github.repository_owner }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
           fi
           echo "$EOF" >> "$GITHUB_ENV"
       
@@ -125,16 +131,19 @@ jobs:
           fetch-depth: 1
 
       - name: Docker Hub Description
-        if: inputs.registry-dockerhub
+        if: inputs.registry-dockerhub-enable
         uses: peter-evans/dockerhub-description@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ inputs.image-name }}
+          repository: ${{ env.dockerhub-repo }}
           readme-filepath: ${{ inputs.registry-readme }}
 
       - name: Selecting primary image from
         run: echo "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}"
+        
+      - name: Primary image will be
+        run: echo "primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )"
         
       - name: Set output image
         id: get-primary-image
