@@ -12,14 +12,14 @@ permissions:
 jobs:
 
   build-hello-universe:
-    uses: localagi/ai-dedicated-workflows/.github/workflows/operation-docker-build-publish.yml@main
+    uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
       image-name: ${{ github.repository_owner }}/hello-universe
       registry-dockerhub: false #TODO remove
     secrets: inherit
 
   build-hello-outerspace:
-    uses: localagi/ai-dedicated-workflows/.github/workflows/operation-docker-build-publish.yml@main
+    uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
       image-name: ${{ github.repository_owner }}/hello-outerspace
       dockerfile: Dockerfile.dependent
