@@ -15,7 +15,6 @@ jobs:
     uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
       image-name: ${{ github.repository_owner }}/hello-universe
-      registry-dockerhub: false #TODO remove
     secrets: inherit
 
   build-hello-outerspace:
@@ -25,6 +24,5 @@ jobs:
       dockerfile: Dockerfile.dependent
       build-args: |
         FROM_IMAGE=${{needs.build-hello-universe.outputs.primary-image}}
-      registry-dockerhub: false #TODO remove
     secrets: inherit
     needs: build-hello-universe
