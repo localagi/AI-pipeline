@@ -1,0 +1,4 @@
+ARG FROM_IMAGE
+FROM ${FROM_IMAGE}
+
+ENTRYPOINT echo "hello outer space"

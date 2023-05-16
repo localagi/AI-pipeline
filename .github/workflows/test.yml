@@ -1,0 +1,28 @@
+name: Publish Docker images
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+
+  build-hello-universe:
+    uses: localagi/ai-dedicated-workflows/.github/workflows/operation-docker-build-publish.yml@main
+    with:
+      image-name: ${{ github.repository_owner }}/hello-universe
+    secrets: inherit
+
+  build-hello-outerspace:
+    uses: localagi/ai-dedicated-workflows/.github/workflows/operation-docker-build-publish.yml@main
+    with:
+      image-name: ${{ github.repository_owner }}/hello-outerspace
+      dockerfile: Dockerfile.dependent
+      build-args: |
+        FROM_IMAGE=${{needs.build-hello-universe.outputs.primary-image}}@${{needs.call-docker-build-fastchat.outputs.digest}}
+    secrets: inherit
+    needs: build-hello-universe
