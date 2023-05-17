@@ -40,6 +40,13 @@ on:
       platforms:
         type: string
         default: linux/amd64
+      cache-from:
+        type: string
+        default: type=gha
+      cache-to:
+        type: string
+        default: type=gha,mode=max
+
     outputs:
       digest:
         description: "Digest of docker image"
@@ -125,8 +132,8 @@ jobs:
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max	
+          cache-from: ${{ inputs.cache-from }}
+          cache-to: ${{ inputs.cache-to }}
  
       # publish README on docker hub
       - uses: actions/checkout@v3
