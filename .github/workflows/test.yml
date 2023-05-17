@@ -15,6 +15,14 @@ jobs:
     uses: ./.github/workflows/operation-docker-build-publish.yml
     secrets: inherit
     
+  # multiarch
+  build-ai-dedicated-workflows-multiarch:
+    uses: ./.github/workflows/operation-docker-build-publish.yml
+    with:
+      platforms: linux/amd64,linux/arm64/v8
+    secrets: inherit
+    
+  # dependent docker images
   build-hello-universe:
     uses: ./.github/workflows/operation-docker-build-publish.yml
     with:
