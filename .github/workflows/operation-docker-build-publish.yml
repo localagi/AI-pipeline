@@ -56,7 +56,7 @@ on:
         value: ${{ jobs.build_publish_docker.outputs.primary-image }}
     secrets:
       DOCKERHUB_TOKEN:
-        required: true
+        required: false
         
 jobs:
   build_publish_docker:
