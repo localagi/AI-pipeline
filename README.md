@@ -2,7 +2,8 @@
 Reusable workflows for AI
 
 # implemented at
-See [localAGI Profile](https://github.com/localagi)
+See [AI-workflow network dependants](../../network/dependents)
+and [localAGI Profile](https://github.com/localagi)
 
 ------------------------------
 ------------------------------
