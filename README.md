@@ -15,15 +15,13 @@ Sophisticated docker builds for parent project [**This-project**](https://github
 
 Easy setup. Compatible. Tweakable. Scaleable.
 
-### Supported platforms
+#### Supported platforms
 `amd64`, `arm64`
 
-### Supported versions
+#### Supported versions
 Containers follow the version scheme of the parent project
 
-* main (default)
-* 0.2.9
-* 0.2.5
+`main` (default), `0.2.9`, `0.2.5`, ...
 
 See [Releases](../../releases)
 
