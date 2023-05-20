@@ -22,7 +22,7 @@ Easy setup. Compatible. Tweakable. Scaleable.
 #### Supported versions
 Containers follow the version scheme of the parent project
 
-`main` (default), `0.2.9`, `0.2.5`, ...
+`main` (default), `0.2.9`, `0.2.5`, etc.
 
 See [Releases](../../releases)
 
@@ -44,11 +44,14 @@ The following wil get all **This-project** images and do something
 * open/refresh `http://localhost:3000` 
 
 ### Runtime options
+Environment variables to set for the specific service
 
-#### version selection
-Prepend, e.g. `PROJECT_VERSION=0.2.9`
+#### version selection `PROJECT_VERSION`
+Prepend, e.g. `PROJECT_VERSION=1.2.3`
 
-....etc
+#### Another runtime option
+
+foo bar baz
 
 ### Get the latest builds / update
 `docker compose pull`
