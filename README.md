@@ -62,3 +62,6 @@ When there is a new version of **This-project** or you require the latest main b
 ## Problems?
 
 Open an issue on the [Issue Tracker](../../issues)
+
+## Limitations
+We cannot support issues regarding the base software. Please refer to the main project page mentioned in the second line of this card.
