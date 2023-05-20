@@ -19,6 +19,10 @@ on:
       context:
         type: string
         default: "{{defaultContext}}"
+      context-cache:
+        type: string
+        description: a cache key
+        required: false
       push:
         type: boolean
         default: true
@@ -139,14 +143,34 @@ jobs:
       # Needed for cache layers on github registry
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Restore cached context
+        if: inputs.context-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: /cached-context
+          key: ${{ inputs.context-cache }}
+          fail-on-cache-miss: true
+          
+      - name: debug
+        run: pwd && ls -lah && ls -lah / && ls -lah /cached-context
+        if: inputs.context-cache
       
+      - name: Set docker-context
+        run: |
+          if [ -z "${{inputs.context-cache}}" ] ; then
+            echo "docker-context=${{inputs.context}}" >> $GITHUB_ENV
+          else
+            echo "docker-context=/cached-context" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker images
         id: dockerBuild
         uses: docker/build-push-action@v4
         with:
           platforms: ${{ inputs.platforms }}
           file: ${{ inputs.dockerfile }}
-          context: ${{ inputs.context }}
+          context: ${{ env.docker-context }}
           build-args: ${{ inputs.build-args }}
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
