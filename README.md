@@ -25,7 +25,7 @@ Containers follow the version scheme of the parent project
 * 0.2.9
 * 0.2.5
 
-See [Releases](./releases)
+See [Releases](../../releases)
 
 ## Prerequisites
 
@@ -63,4 +63,4 @@ When there is a new version of **This-project** or you require the latest main b
 
 ## Problems?
 
-Open an issue on the [Issue Tracker](./issues)
+Open an issue on the [Issue Tracker](../../issues)
