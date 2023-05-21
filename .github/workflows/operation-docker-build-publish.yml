@@ -190,7 +190,7 @@ jobs:
         with:
           platforms: ${{ inputs.platforms }}
           file: ${{ inputs.dockerfile }}
-          context: ${{ env.docker-context }}
+          context: ${{ inputs.context || env.docker-context }}
           build-args: ${{ inputs.build-args }}
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
