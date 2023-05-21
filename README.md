@@ -12,7 +12,10 @@ and [localAGI Profile](https://github.com/localagi)
 ------------------------------
 
 # Service-name-docker
+
 Sophisticated docker builds for parent project [**This-project**](https://github.com/**This-project**). 
+
+![example workflow](https://github.com/localagi/ai-dedicated-workflows/actions/workflows/publish-docker.yml/badge.svg?branch=main)
 
 Easy setup. Compatible. Tweakable. Scaleable.
 
