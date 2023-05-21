@@ -25,8 +25,9 @@ Defaults to `Dockerfile`
 #### Support matrix
 
 |                       | **local source** `inputs.context` | **remote source** `inputs.context` | **complex remote source** `inputs.context-repository` |
-| **local Dockerfile**  | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
-| **remote Dockerfile** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
+| ---- | ---- | ---- | ---- |
+| **local Dockerfile  `inputs.dockerfile`** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
+| **remote Dockerfile `inputs.dockerfile`** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
 
 #### Caching
 Defaults to `gha` cache for docker builds
