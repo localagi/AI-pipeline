@@ -38,6 +38,14 @@ Defaults to `gha` cache for docker builds
 
 Set to `${{ null }}` to disable
 
+## More build space
+Clean up the disk beforehand for large builds
+
+* `inputs.pre-free-disk-space`
+
+Set to `true` to enable
+
+
 ## Registry selection
 All enabled by default
 * `inputs.registry-dockerhub-enable`
