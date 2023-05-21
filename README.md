@@ -15,7 +15,7 @@ and [localAGI Profile](https://github.com/localagi)
 
 Sophisticated docker builds for parent project [**This-project**](https://github.com/**This-project**). 
 
-![example workflow](https://github.com/localagi/ai-dedicated-workflows/actions/workflows/publish-docker.yml/badge.svg?branch=main)
+![example workflow](https://github.com/localagi/ai-dedicated-workflows/actions/workflows/publish-docker.yml/badge.svg)
 
 Easy setup. Compatible. Tweakable. Scaleable.
 
