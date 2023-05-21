@@ -58,6 +58,8 @@ on:
       pre-free-disk-space:
         type: boolean
         default: false
+      matrix-id:
+        type: string
     outputs:
       digest:
         description: "Digest of docker image"
@@ -220,4 +222,8 @@ jobs:
         
       - name: Set output image
         id: get-primary-image
-        run: echo "primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"	
+        run: echo "primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"
+      - name: Set output image matrix
+        id: get-primary-image-matrix
+        if: inputs.matrix-id
+        run: echo "matrix.${{ inputs.matrix-id }}.primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"
