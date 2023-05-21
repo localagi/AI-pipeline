@@ -227,3 +227,9 @@ jobs:
         id: get-primary-image-matrix
         if: inputs.matrix-id
         run: echo "matrix.${{ inputs.matrix-id }}.primary-image=$( cut -d ',' -f 1 <<< "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}" )" >> "$GITHUB_OUTPUT"
+      - name: Set output digest matrix
+        id: set-digest-matrix
+        if: inputs.matrix-id
+        run: echo "matrix.${{ inputs.matrix-id }}.digest=${{ steps.dockerBuild.outputs.digest }}" >> "$GITHUB_OUTPUT"
+        
+         
