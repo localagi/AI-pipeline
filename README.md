@@ -1,9 +1,52 @@
 # ai-dedicated-workflows
 Reusable workflows for AI
 
-# implemented at
-See [AI-workflow network dependants](../../network/dependents)
-and [localAGI Profile](https://github.com/localagi)
+# Supported features
+The pipeline takes a lot of inputs. Here is a brief overview.
+
+## Placement of source and dockerfiles
+
+#### Context for docker build
+In order of precedence
+* `inputs.context` - will be directly mapped to context of `docker/build-push-action`, could be a plain git repo also
+* `inputs.context-repository` - git repository of complex remotes. Full support of submodules etc
+* `inputs.context-cache` - a cache key to restore files from (untested)
+
+##### git references for remote sources
+
+* `inputs.context` - in form of `https://github.com/my_user/my_repo.git#ref`
+* `inputs.context-repository-ref` - use with `inputs.context-repository` in form of `ref`
+
+#### Dockerfile for docker build
+Defaults to `Dockerfile`
+
+* `inputs.dockerfile` - can be any relative, absolute or `https://` path
+
+#### Support matrix
+
+|                       | **local source** `inputs.context` | **remote source** `inputs.context` | **complex remote source** `inputs.context-repository` |
+| **local Dockerfile**  | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
+| **remote Dockerfile** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
+
+#### Caching
+Defaults to `gha` cache for docker builds
+* `inputs.cache-from`
+* `inputs.cache-to`
+
+Set to `${{ null }}` to disable
+
+## Registry selection
+All enabled by default
+* `inputs.registry-dockerhub-enable`
+* `inputs.registry-github-enable`
+
+## Custom docker registry README
+Defaults to `README.md`
+* `registry-readme`
+
+# used by
+
+see [about localAGI](https://github.com/localagi)
 
 ------------------------------
 ------------------------------
