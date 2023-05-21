@@ -26,6 +26,8 @@ on:
       context-repository:
         type: string
         description: github repository to use
+      context-repository-ref:
+        type: string
       push:
         type: boolean
         default: true
@@ -173,6 +175,7 @@ jobs:
         if: inputs.context-repository
         with:
           repository: ${{ inputs.context-repository }}
+          ref: ${{ inputs.context-repository-ref }}
           path: repository-context
           fetch-depth: 1
           submodules: true
