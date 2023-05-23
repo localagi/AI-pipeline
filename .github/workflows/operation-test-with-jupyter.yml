@@ -13,7 +13,6 @@ on:
         type: string
       port-mapping:
         type: string
-        required: true
       image-options:
         type: string
         description: like --entrypoint, --command
