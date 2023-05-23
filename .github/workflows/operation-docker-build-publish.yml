@@ -9,8 +9,14 @@ on:
           type=schedule
           type=ref,event=branch
           type=ref,event=pr
-          type=semver,pattern={{version}}
+          type=semver,pattern={{raw}}
           type=sha
+      flavor: 
+        type: string
+        default: |
+          latest=auto
+          prefix=
+          suffix=
       build-args:
         type: string
       dockerfile:
@@ -42,7 +48,7 @@ on:
         default: true
       registry-readme:
         type: string
-        default: README.md
+        default: https://raw.githubusercontent.com/localagi/ai-pipeline/main/README.docker.md
       runs-on:
         type: string
         default: ubuntu-latest
@@ -120,28 +126,6 @@ jobs:
         run: |
           echo "dockerhub-repo=${{ vars.DOCKERHUB_USERNAME }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
 
-      - name: Set image names
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "image-names<<$EOF" >> "$GITHUB_ENV"
-          if ${{ inputs.registry-dockerhub-enable }} ; then
-            echo "${{ env.dockerhub-repo }}" >> "$GITHUB_ENV"
-          fi
-          if ${{ inputs.registry-github-enable }} ; then
-            echo "ghcr.io/${{ github.repository_owner }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
-          fi
-          echo "$EOF" >> "$GITHUB_ENV"
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ${{ env.image-names }}
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            ${{ inputs.tags }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         
@@ -184,6 +168,32 @@ jobs:
         if: inputs.context-repository
         run: echo "docker-context=repository-context" >> $GITHUB_ENV
 ######           
+
+###### Docker build metadata
+
+      - name: Set image names
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "image-names<<$EOF" >> "$GITHUB_ENV"
+          if ${{ inputs.registry-dockerhub-enable }} ; then
+            echo "${{ env.dockerhub-repo }}" >> "$GITHUB_ENV"
+          fi
+          if ${{ inputs.registry-github-enable }} ; then
+            echo "ghcr.io/${{ github.repository_owner }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
+          fi
+          echo "$EOF" >> "$GITHUB_ENV"
+          
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.image-names }}
+          # generate Docker tags based on the following events/attributes
+          tags: ${{ inputs.tags }}
+          flavor: ${{ inputs.flavor }}
+
+######     
+          
       - name: Build and push Docker images
         id: dockerBuild
         uses: docker/build-push-action@v4
@@ -202,7 +212,24 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
+          
+###### Load docker readme file from remote
 
+      - name: Get remote registry readme 
+        if: startsWith(inputs.registry-readme, 'https')
+        run: wget ${{ inputs.registry-readme }} -O README.docker.remote.md
+      
+      - name: debug
+        run: echo "startsWith( 'https' , inputs.registry-readme  )"
+
+      - name: Set registry readme file
+        run: |
+          if ${{ startsWith( inputs.registry-readme, 'https' ) }} ; then
+            echo "registry-readme=README.docker.remote.md" >> "$GITHUB_ENV"
+          else 
+            echo "registry-readme=${{ inputs.registry-readme }}" >> "$GITHUB_ENV"
+          fi
+####### 
       - name: Docker Hub Description
         if: inputs.registry-dockerhub-enable
         uses: peter-evans/dockerhub-description@v3
@@ -210,7 +237,7 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ env.dockerhub-repo }}
-          readme-filepath: ${{ inputs.registry-readme }}
+          readme-filepath: ${{ env.registry-readme }}
 
       - name: Selecting primary image from
         run: echo "${{ fromJSON(steps.dockerBuild.outputs.metadata)['image.name'] }}"

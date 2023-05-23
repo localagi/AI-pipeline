@@ -1,44 +1,59 @@
-# ai-dedicated-workflows
-Reusable workflows for AI
+# AI Pipeline
+Reusable github workflows for AI projects
 
-![example workflow](https://github.com/localagi/ai-dedicated-workflows/actions/workflows/publish-docker.yml/badge.svg?branch=main)
+![example workflow](https://github.com/localagi/ai-pipeline/actions/workflows/publish-docker.yml/badge.svg?branch=main)
+
+![example workflow](https://github.com/localagi/ai-pipeline/actions/workflows/test-service.yml/badge.svg?branch=main)
+
+This contains a collection of [reusable workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows) crafted for AI projects.
+
+See where it is used at [about localAGI](https://github.com/localagi)
 
 # Supported features
-The pipeline takes a lot of inputs. Here is a brief overview.
 
-## Placement of source and dockerfiles
+* [Docker build and publish pipeline](#docker)
+* [Jupyter notebook test pipeline (TBD)](#jupyter)
+ 
+<a name="docker	"></a>
+## Docker build and publish pipeline
 
-### Context for docker build
+Reliably builds and publishes your AI-project wrapped in docker containers on various registries.
+
+`uses: localagi/ai-pipeline/.github/workflows/operation-docker-build-publish.yml@v2`
+
+### Placement of source and dockerfiles
+
+#### Context for docker build
 In order of precedence
 * `inputs.context` - will be directly mapped to context of `docker/build-push-action`, could be a plain git repo also
 * `inputs.context-repository` - git repository of complex remotes. Full support of submodules etc
 * `inputs.context-cache` - a cache key to restore files from (untested)
 
-#### git references for remote sources
+##### git references for remote sources
 
 * `inputs.context` - in form of `https://github.com/my_user/my_repo.git#ref`
 * `inputs.context-repository-ref` - use with `inputs.context-repository` in form of `ref`
 
-### Dockerfile for docker build
+#### Dockerfile for docker build
 Defaults to `Dockerfile`
 
 * `inputs.dockerfile` - can be any relative, absolute or `https://` path
 
-### Support matrix
+#### Support matrix Dockerfile x context directory
 
 |                       | **local source** `inputs.context` | **remote source** `inputs.context` | **complex remote source** `inputs.context-repository` |
 | ---- | ---- | ---- | ---- |
 | **local Dockerfile  `inputs.dockerfile`** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
 | **remote Dockerfile `inputs.dockerfile`** | :ballot_box_with_check:          | :ballot_box_with_check:             | :ballot_box_with_check: |
 
-## Caching
+### Caching
 Defaults to `gha` cache for docker builds
 * `inputs.cache-from`
 * `inputs.cache-to`
 
 Set to `${{ null }}` to disable
 
-## More build space
+### More build space
 Clean up the disk beforehand for large builds
 
 * `inputs.pre-free-disk-space`
@@ -46,18 +61,23 @@ Clean up the disk beforehand for large builds
 Set to `true` to enable
 
 
-## Registry selection
+### Docker Registry selection
 All enabled by default
 * `inputs.registry-dockerhub-enable`
 * `inputs.registry-github-enable`
 
-## Custom docker registry README
+### Custom dockerhub registry README
 Defaults to `README.md`
 * `inputs.registry-readme`
+Supports getting a remote readme from `https://`
 
-# used by
+<a name="docker	"></a>
+## Jupyter test pipeline
+Easily test the resulting containers against your test-notebook
 
-see [about localAGI](https://github.com/localagi)
+`uses: localagi/ai-dedicated-workflows/.github/workflows/operation-test-with-jupyter.yml@v2` - 
+
+**TBD**
 
 ------------------------------
 ------------------------------

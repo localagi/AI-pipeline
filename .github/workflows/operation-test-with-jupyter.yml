@@ -1,0 +1,70 @@
+name: Test junyper notebook
+on:
+  workflow_call:
+    inputs:
+      notebook-path:
+        type: string
+        default: tests/
+        description: path where all *.ipynb to be tested are in
+      image:
+        type: string
+        required: true
+      port:
+        type: string
+      port-mapping:
+        type: string
+        required: true
+      image-options:
+        type: string
+        description: like --entrypoint, --command
+      additional-python-dependencies:
+        type: string
+        description: add whatever pip you need here
+# Maybe later with papermill
+#    secrets:
+#      OPENAI_API_KEY:
+#        required: false
+jobs:
+  jupyter-test-job:
+    runs-on: ubuntu-latest
+#    container: python:3.10-slim-buster
+
+    outputs:
+      digest: ${{ steps.dockerBuild.outputs.digest }}
+    services:
+      service-under-test:
+        image: ${{ inputs.image }}
+        ports:
+          - ${{ inputs.port-mapping || format('{0}:{1}', inputs.port, inputs.port) }}
+#        options: ${{ inputs.image-options }}
+#     volumes:
+#       - /models:/models
+
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+ 
+      - name: Install jupyter
+        run: pip3 install jupyter nbconvert[webpdf]
+      - name: Install jupyter output generation dependencies
+        run: sudo apt install -y pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
+
+
+      - name: Install additional dependencies for notebooks
+        if: inputs.additional-python-dependencies
+        run: pip3 install ${{ inputs.additional-python-dependencies }}
+      
+        ## need specific version of notebook? run from http maybe   
+      - name: Execute notebook
+        run: python3 -m nbconvert --execute --to pdf --log-level DEBUG ${{ inputs.notebook-path }}/*.ipynb 
+        # run: python3 -m nbconvert --execute --to webpdf --allow-chromium-download --log-level DEBUG ${{ inputs.notebook-file }} 
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: ${{ inputs.notebook-path }}/*.pdf
