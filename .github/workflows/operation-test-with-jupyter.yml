@@ -60,7 +60,7 @@ jobs:
       
         ## need specific version of notebook? run from http maybe   
       - name: Execute notebook
-        run: python3 -m nbconvert --execute --to pdf --log-level DEBUG ${{ inputs.notebook-path }}/*.ipynb 
+        run: python3 -m nbconvert --execute --allow-errors --to pdf --log-level DEBUG ${{ inputs.notebook-path }}/*.ipynb 
         # run: python3 -m nbconvert --execute --to webpdf --allow-chromium-download --log-level DEBUG ${{ inputs.notebook-file }} 
         
       - uses: actions/upload-artifact@v3

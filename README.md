@@ -79,6 +79,9 @@ Easily test the resulting containers against your test-notebook
 
 **TBD**
 
+### Example
+For a service using the test pipeline, see here: [localAGI/AGiXT-docker](https://github.com/localagi/AGiXT-docker)
+
 ------------------------------
 ------------------------------
 # Template for Service Model Card about built service
