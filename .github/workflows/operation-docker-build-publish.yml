@@ -218,9 +218,6 @@ jobs:
       - name: Get remote registry readme 
         if: startsWith(inputs.registry-readme, 'https')
         run: wget ${{ inputs.registry-readme }} -O README.docker.remote.md
-      
-      - name: debug
-        run: echo "startsWith( 'https' , inputs.registry-readme  )"
 
       - name: Set registry readme file
         run: |
