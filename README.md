@@ -106,6 +106,9 @@ Containers follow the version scheme of the parent project
 
 See [Releases](../../releases)
 
+#### Naming scheme
+e.g. `-cuda-{cuda_version}`
+
 ## Prerequisites
 
 * `docker` and `docker compose` are available on your system
@@ -138,6 +141,15 @@ foo bar baz
 
 ### Cleanup
 `docker compose rm`
+
+## Run a dev environment
+
+Use `docker-compose.dev.yaml` as an additon to 
+* directly mount source code into the container (run your modifications)
+* automatically restart the container on error
+
+
+Run `docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up`
 
 ## Contributing
 
