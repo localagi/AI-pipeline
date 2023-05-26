@@ -19,10 +19,14 @@ on:
       additional-python-dependencies:
         type: string
         description: add whatever pip you need here
-# Maybe later with papermill
-#    secrets:
-#      OPENAI_API_KEY:
-#        required: false
+      additional-args:
+        description: additional args for nbconvert
+        default: "--allow-errors"
+
+    secrets:
+      api-key:
+        description: Optional api-key available as os.getenv('API_KEY') in your notebook
+        
 jobs:
   jupyter-test-job:
     runs-on: ubuntu-latest
@@ -58,10 +62,10 @@ jobs:
         if: inputs.additional-python-dependencies
         run: pip3 install ${{ inputs.additional-python-dependencies }}
       
-        ## need specific version of notebook? run from http maybe   
       - name: Execute notebook
-        run: python3 -m nbconvert --execute --allow-errors --to pdf --log-level DEBUG ${{ inputs.notebook-path }}/*.ipynb 
-        # run: python3 -m nbconvert --execute --to webpdf --allow-chromium-download --log-level DEBUG ${{ inputs.notebook-file }} 
+        env:
+          API_KEY: ${{ secrets.api-key }}
+        run: python3 -m nbconvert --execute ${{ inputs.additional-args }} --to pdf --log-level DEBUG ${{ inputs.notebook-path }}/*.ipynb 
         
       - uses: actions/upload-artifact@v3
         with:
