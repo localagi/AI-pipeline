@@ -2,6 +2,15 @@ name: Build and publish python package
 
 on:
   workflow_call:
+    inputs:
+      source-repo:
+        type: string
+        description: path to source for built
+        default: ${{ github.repo }}
+      source-branch:
+        type: string
+        default: ${{ github.ref_name }}
+      
     secrets:
       PYPI_API_TOKEN:
         required: true
@@ -16,6 +25,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.source-repo }}
+        ref: ${{ inputs.source-branch }}
     
     - name: Set up Python
       uses: actions/setup-python@v3
