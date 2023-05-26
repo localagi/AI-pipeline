@@ -20,6 +20,7 @@ on:
         type: string
         description: add whatever pip you need here
       additional-args:
+        type: string
         description: additional args for nbconvert
         default: "--allow-errors"
 
