@@ -19,10 +19,14 @@ on:
       additional-python-dependencies:
         type: string
         description: add whatever pip you need here
+      allow-errors:
+        type: boolean
+        description: Fail if there is an error in the execution of the notebook
+        default: false
       additional-args:
         type: string
         description: additional args for nbconvert
-        default: "--allow-errors"
+        default: "--log-level DEBUG"
 
     secrets:
       api-key:
@@ -73,11 +77,22 @@ jobs:
             echo "notebook-file=${notebook}/*.ipynb" >> "$GITHUB_ENV"
             echo "artifact-file=${notebook}/*.pdf"  >> "$GITHUB_ENV"
           fi
-      
+          
+      - name: Configure nbconvert args
+        run: echo "nbconvert-args=--execute ${{ inputs.additional-args }} --to pdf" >> "$GITHUB_ENV"
+          
+      - name: Enable switch --allow-errors
+        if: inputs.allow-errors
+        run: echo "nbconvert-args=${{ env.nbconvert-args }} --allow-errors"
+
+      - name: Add additional nbconvert args
+        if: inputs.additional-args
+        run: echo "nbconvert-args=${{ env.nbconvert-args }} ${{ inputs.additional-args }}"
+        
       - name: Execute notebook
         env:
           API_KEY: ${{ secrets.api-key }}
-        run: python3 -m nbconvert --execute ${{ inputs.additional-args }} --to pdf --log-level DEBUG ${{ env.notebook-file }} 
+        run: python3 -m nbconvert ${{ env.nbconvert-args }}  ${{ env.notebook-file }} 
         
       - uses: actions/upload-artifact@v3
         with:

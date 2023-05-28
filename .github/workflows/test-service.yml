@@ -1,20 +1,21 @@
 name: Jupyter Tests
 
 on:
+  push:
     branches: [main]
   release:
     types: [published]
   workflow_dispatch:
 
 permissions:
-  packages: write
   contents: read
 
 jobs:
   test-service:
     uses: ./.github/workflows/operation-test-with-jupyter.yml
     with:
-      image: httpd:2.4
+      image: nginx:mainline
       port-mapping: "8080:80" 
       additional-python-dependencies: requests
+      notebook: tests/notebook.ipynb
     secrets: inherit
