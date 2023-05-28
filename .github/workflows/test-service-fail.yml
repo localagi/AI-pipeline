@@ -1,4 +1,4 @@
-name: Jupyter Tests
+name: Jupyter Tests that should fail
 
 on:
   push:
@@ -12,10 +12,10 @@ permissions:
 
 jobs:
 
-  test-service:
+  test-service-batch-fail:
     uses: ./.github/workflows/operation-test-with-jupyter.yml
     with:
       image: nginx:mainline
       port-mapping: "8080:80" 
       additional-python-dependencies: requests
-      notebook: tests/notebook.ipynb
+      notebook: tests
