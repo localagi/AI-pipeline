@@ -117,7 +117,7 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Generate dockerhub full repo path
@@ -179,7 +179,7 @@ jobs:
             echo "${{ env.dockerhub-repo }}" >> "$GITHUB_ENV"
           fi
           if ${{ inputs.registry-github-enable }} ; then
-            echo "ghcr.io/${{ github.repository_owner }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
+            echo "ghcr.io/${{ github.actor }}/${{ inputs.registry-repo-name }}" >> "$GITHUB_ENV"
           fi
           echo "$EOF" >> "$GITHUB_ENV"
           
