@@ -27,6 +27,9 @@ on:
         type: string
         description: additional args for nbconvert
         default: "--log-level DEBUG"
+      append-logs:
+        type: boolean
+        default: false
 
     secrets:
       api-key:
@@ -94,6 +97,16 @@ jobs:
           API_KEY: ${{ secrets.api-key }}
         run: python3 -m nbconvert ${{ env.nbconvert-args }}  ${{ env.notebook-file }} 
         
+      - name: Append test logs
+        if: inputs.append-logs
+        run: |
+          docker logs "${{ job.services.agixt.id }}" > /test-output.log
+          
+      - name: Append test logs
+        if: inputs.append-logs
+        run: |
+          echo "artifact-file=${{ env.artifact-file }}\n/test-output.log" >> "$GITHUB_ENV"
+            
       - uses: actions/upload-artifact@v3
         with:
           name: test-reports

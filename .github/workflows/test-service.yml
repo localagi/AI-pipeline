@@ -19,3 +19,4 @@ jobs:
       port-mapping: "8080:80" 
       additional-python-dependencies: requests
       notebook: tests/notebook.ipynb
+      append-log: true
